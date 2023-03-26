@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mpd
+    environment:
+      - MPD_SCHEME=http
+      - MPD_HOST=mpd
+      - MPD_PORT=4001
+      - MPD_TIMEOUT=5000
+  mpd:
+    image: garryturk/mock-product-data
+    ports:
+      - "4001:4001"

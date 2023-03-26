@@ -1,0 +1,197 @@
+openapi: 3.0.3
+info:
+  title: Streaem Home Assignment
+  version: 0.0.1
+paths:
+  /products:
+    get:
+      description: Get all products
+      operationId: getProducts
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: maxPrice
+        in: query
+        required: false
+        schema:
+          type: number
+      - name: minPrice
+        in: query
+        required: false
+        schema:
+          type: number
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: minQuantity
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: maxQuantity
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductInfo'
+        '400':
+          description: 'Invalid value for: query parameter id, Invalid value for:
+            query parameter name, Invalid value for: query parameter maxPrice, Invalid
+            value for: query parameter minPrice, Invalid value for: query parameter
+            category, Invalid value for: query parameter minQuantity, Invalid value
+            for: query parameter maxQuantity'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /products/{id}:
+    get:
+      description: Get product by id
+      operationId: getProductsId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfo'
+        '400':
+          description: 'Invalid value for: path parameter id'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'no product with specified id'
+    put:
+      description: Update product data fields by id, fields not present will be set
+        to null
+      operationId: putProductsId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+        required: true
+      responses:
+        '200':
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfo'
+        '400':
+          description: 'Invalid value for: path parameter id, Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'no product with specified id'
+  /products/{id}/quantity:
+    put:
+      description: Update product quantity by id
+      operationId: putProductsIdQuantity
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int32
+        required: true
+      responses:
+        '200':
+          description: 'updated quantity'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfo'
+        '400':
+          description: 'Invalid value for: path parameter id, Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'no product with specified id'
+components:
+  schemas:
+    ProductData:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        description:
+          type: string
+        category:
+          type: string
+    ProductInfo:
+      required:
+      - id
+      - data
+      - quantity
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        data:
+          $ref: '#/components/schemas/ProductData'
+        quantity:
+          type: integer
+          format: int32
+    UpdateProduct:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
